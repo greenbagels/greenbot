@@ -12,7 +12,7 @@ PLATOBJS=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(PLATSPECIFIC))
 ifeq ($(OS),Windows_NT)
   OBJS+=$(filter %_windows.o, %_windows.o, $(PLATOBJS))
 else
-  OBJS+=$(filter %_linux.o, %_linux.o, $(PLATOBJS))
+  OBJS+=$(filter %_posix.o, %_posix.o, $(PLATOBJS))
 endif
 
 CFLAGS+=-O2 -Wall
