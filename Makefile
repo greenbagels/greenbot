@@ -5,13 +5,14 @@ INCDIR=$(SRCDIR)/inc
 CFLAGS+=-I$(INCDIR)
 
 SRCS=$(wildcard $(SRCDIR)/*.cpp)
-PLATSPECIFIC=$(wildcard $(SRCDIR)/core_*.cpp $(SRCDIR)/connect_*.cpp)
+PLATSPECIFIC=$(wildcard $(SRCDIR)/core_*.cpp) $(wildcard $(SRCDIR)/connect_*.cpp)
 OBJS=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(filter-out $(PLATSPECIFIC), $(SRCS)))
+PLATOBJS=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(PLATSPECIFIC))
 
 ifeq ($(OS),Windows_NT)
-  OBJS+=$(wildcard $(OBJDIR)/*_windows.o)
+  OBJS+=$(filter %_windows.o, %_windows.o, $(PLATOBJS))
 else
-  OBJS+=$(wildcard $(OBJDIR)/*_linux.o)
+  OBJS+=$(filter %_linux.o, %_linux.o, $(PLATOBJS))
 endif
 
 CFLAGS+=-O2 -Wall
