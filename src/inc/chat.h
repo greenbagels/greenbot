@@ -33,9 +33,9 @@ class Chat
   public:
     // Specify a connection to make.
     virtual void Connect(std::string server,
-                 std::string port,
-                 std::string user,
-                 std::string password) = 0;
+        std::string port,
+        std::string user,
+        std::string password) = 0;
 
     // Get the next available message.  This should
     // be a blocking function.

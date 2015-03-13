@@ -17,7 +17,7 @@
 
 #include "socket.h"
 
-void
+  void
 Socket::Send(std::string message)
 {
   if (send(irc_socket, message, strlen(message), NULL) == SOCKET_ERROR)
@@ -28,7 +28,7 @@ Socket::Send(std::string message)
   }
 }
 
-std::string
+  std::string
 Socket::Recv()
 {
   char recvbuf[PACKET_SIZE];

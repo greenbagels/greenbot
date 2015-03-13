@@ -20,31 +20,31 @@ class IRCMessage : public Message
 {
   friend class IRCChat;
   private:
-    // The message string.
-    std::string str;
+  // The message string.
+  std::string str;
 
-    // IRC Specific.
-    std::string prefix;
-    std::string nickname;
-    std::string username;
-    std::string hostname;
-    std::string servername;
-    std::string command;
-    std::deque<std::string> argList;
+  // IRC Specific.
+  std::string prefix;
+  std::string nickname;
+  std::string username;
+  std::string hostname;
+  std::string servername;
+  std::string command;
+  std::deque<std::string> argList;
 
   public:
-    // Returns the string to be parsed and used by
-    // the bot.
-    std::string GetString();
+  // Returns the string to be parsed and used by
+  // the bot.
+  std::string GetString();
 
-    // Returns the user who sent the message.
-    IRCUser *GetUser();
+  // Returns the user who sent the message.
+  IRCUser *GetUser();
 
-    // Generate a new message given an old message.
-    IRCMessage *Respond(std::string s);
+  // Generate a new message given an old message.
+  IRCMessage *Respond(std::string s);
 
-    // Constructor.
-    IRCMessage(std::string s);
+  // Constructor.
+  IRCMessage(std::string s);
 };
 
 class IRCChat : public Chat
@@ -56,9 +56,9 @@ class IRCChat : public Chat
   public:
     // Specify a connection to make.
     void Connect(std::string server,
-                 std::string port,
-                 std::string user,
-                 std::string password);
+        std::string port,
+        std::string user,
+        std::string password);
 
     // Get the next available message.
     IRCMessage *GetMessage();

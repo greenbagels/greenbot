@@ -14,7 +14,7 @@ Bot::Bot(Chat *c)
   chat = c;
 }
 
-void
+  void
 Bot::Start()
 {
   while (1) {
@@ -36,9 +36,9 @@ Bot::Start()
   return;
 }
 
-void
+  void
 Bot::Register(std::string command,
-              void (*fn)(Chat*, std::smatch, Message*))
+    void (*fn)(Chat*, std::smatch, Message*))
 {
   callbacks[command] = fn;
 }

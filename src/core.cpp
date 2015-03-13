@@ -23,6 +23,6 @@ int main()
   Bot *b = new Bot(ircChat);
   b->Register("\\.bots(.*)", &botsCall);
   b->Start();
-	return 0;
+  return 0;
 }
 
