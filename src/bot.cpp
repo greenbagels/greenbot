@@ -18,9 +18,8 @@ void
 Bot::Start()
 {
   while (1) {
-    std::cout << "starting bot..." << std::endl;
     Message *m = chat->GetMessage();
-    if (m->GetString() == "") break;
+    if (m->GetString() == "") continue;
 
     for (const auto &callbackPair : callbacks)
     {
@@ -29,7 +28,7 @@ Bot::Start()
       std::regex_match(m->GetString(), sm, e);
       if (sm.size() > 0)
       {
-        (callbackPair.second)(sm, m);
+        (callbackPair.second)(chat, sm, m);
       }
     }
   }
@@ -39,7 +38,7 @@ Bot::Start()
 
 void
 Bot::Register(std::string command,
-              void (*fn)(std::smatch, Message*))
+              void (*fn)(Chat*, std::smatch, Message*))
 {
   callbacks[command] = fn;
 }

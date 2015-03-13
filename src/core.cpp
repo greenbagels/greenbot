@@ -10,10 +10,10 @@
 int IRCRegistration(int irc_socket);
 int MainLoop(int irc_socket);
 
-void botsCall(std::smatch sm, Message *m)
+void botsCall(Chat *c, std::smatch sm, Message *m)
 {
-  std::cout << m->GetString() << std::endl;
-  std::cout << "BOTS CALL!" << std::endl;
+  std::cout << "wooo" << std::endl;
+  c->SendMessage(m->Respond("Hello!"));
 }
 
 int main()

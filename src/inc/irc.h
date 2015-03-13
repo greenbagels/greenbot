@@ -3,6 +3,7 @@
 
 #include "chat.h"
 #include "socket.h"
+#include <deque>
 
 class IRCUser : public User
 {
@@ -17,9 +18,19 @@ class IRCUser : public User
 
 class IRCMessage : public Message
 {
+  friend class IRCChat;
   private:
     // The message string.
     std::string str;
+
+    // IRC Specific.
+    std::string prefix;
+    std::string nickname;
+    std::string username;
+    std::string hostname;
+    std::string servername;
+    std::string command;
+    std::deque<std::string> argList;
 
   public:
     // Returns the string to be parsed and used by
@@ -33,7 +44,7 @@ class IRCMessage : public Message
     IRCMessage *Respond(std::string s);
 
     // Constructor.
-    IRCMessage(std::string);
+    IRCMessage(std::string s);
 };
 
 class IRCChat : public Chat
