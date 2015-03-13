@@ -67,8 +67,8 @@ IRCMessage::IRCMessage(std::string s)
     // Save the trail (char after colon to end of string).
     str = s.substr(trailBegin + 2, s.npos);
   }
-  // 
-  argList = Split(s.substr(prefixEnd + 1, (trailBegin - prefixEnd - 1)), ' '); //we want a list of the arguments so we can seperately address them
+  // We get a list of the arguments.
+  argList = Split(s.substr(prefixEnd + 1, (trailBegin - prefixEnd - 1)), ' ');
 
   if (!argList.empty())
   {
