@@ -1,5 +1,5 @@
 # greenbot
-A configurable IRC bot written in C++.
+A configurable chat based bot written in C++.
 
 # Building
     make
