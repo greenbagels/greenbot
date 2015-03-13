@@ -5,7 +5,7 @@ INCDIR=$(SRCDIR)/inc
 CFLAGS+=-I$(INCDIR)
 
 SRCS=$(wildcard $(SRCDIR)/*.cpp)
-PLATSPECIFIC=$(wildcard $(SRCDIR)/core_*.cpp) $(wildcard $(SRCDIR)/connect_*.cpp)
+PLATSPECIFIC=$(wildcard $(SRCDIR)/socket_*.cpp) # Not strictly necessary because of the #defines in the files.
 OBJS=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(filter-out $(PLATSPECIFIC), $(SRCS)))
 PLATOBJS=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(PLATSPECIFIC))
 
@@ -15,7 +15,7 @@ else
   OBJS+=$(filter %_posix.o, %_posix.o, $(PLATOBJS))
 endif
 
-CFLAGS+=-O2 -Wall
+CFLAGS+=-O2 -Wall -std=c++11
 CFLAGS_DEBUG+=-O0 -g3 -Werror -DDEBUG -pedantic
 LDFLAGS+=
 

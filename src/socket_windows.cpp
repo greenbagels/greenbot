@@ -1,3 +1,11 @@
+// @file socket_windows.cpp
+// @brief Implementation of the Socket class.
+//
+// Note: Only Windows operating systems can compile this file.
+//
+
+#ifdef _WIN32
+
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #include <iostream>
@@ -7,30 +15,42 @@
 
 #pragma comment(lib, "Ws2_32.lib");
 
-int SendToServer(int irc_socket, const char* message)
+#include "socket.h"
+
+void
+Socket::Send(std::string message)
 {
-    if (send(irc_socket, message, strlen(message), NULL) == SOCKET_ERROR)
-    {
-        std::cout << "send failed: " << WSAGetLastError() << '\n';
-        closesocket(irc_socket);
-        WSACleanup();
-        return 1;
-    }
-    return 0;
+  if (send(irc_socket, message, strlen(message), NULL) == SOCKET_ERROR)
+  {
+      std::cout << "send failed: " << WSAGetLastError() << '\n';
+      closesocket(irc_socket);
+      WSACleanup();
+  }
 }
 
-int CheckPingStatus(int irc_socket, IRCMessage filled_message)
+std::string
+Socket::Recv()
 {
-	if (filled_message.command == "PING")
-	{
-		std::string pong = std::string("PONG :") + filled_message.trail + std::string("\r\n");
-		std::cout << "LOCAL: Sent string: " << pong;
-	    return SendToServer(irc_socket, pong.c_str());
-    }
-	return 0;
+  char recvbuf[PACKET_SIZE];
+	ZeroMemory(&recvbuf, sizeof(recvbuf));
+  int resultCode = recv(socketFd, recvbuf, PACKET_SIZE, 0);
+  std::string out;
+  if (resultCode > 0)
+  {
+    out = std::string(recvbuf);
+  }
+  else if (resultCode == 0)
+  {
+		std::cout << "Connection closed" << std::endl;
+  }
+  else
+  {
+		std::cout << "Recv failed" << std::endl;
+  }
+  return out;
 }
 
-int CreateSocket()
+Socket::Socket(std::string server, std::string port)
 {
 	WSADATA wsa_data;
 
@@ -39,7 +59,7 @@ int CreateSocket()
 	if (result_code != 0)
 	{
 		std::cout << "WSAStartup Failed!: " << result_code << '\n';
-		return INVALID_SOCKET;
+		return;
 	}
 	struct addrinfo *result = NULL, *ptr = NULL, hints;
 
@@ -54,7 +74,7 @@ int CreateSocket()
 	{
 		std::cout << "getaddrinfo failed! " << result_code << '\n';
 		WSACleanup();
-		return INVALID_SOCKET;
+		return;
 	}
 	int connect_socket = INVALID_SOCKET;
 	ptr = result;
@@ -65,7 +85,7 @@ int CreateSocket()
 		std::cout << "Error at socket()! " << WSAGetLastError() << '\n';
 		freeaddrinfo(result);
 		WSACleanup();
-		return connect_socket;
+		return;
 	}
 
 	result_code = connect(connect_socket, ptr->ai_addr, static_cast<int>(ptr->ai_addrlen));
@@ -86,5 +106,30 @@ int CreateSocket()
 		std::cout << "Unable to connect to server!\n";
 		WSACleanup();
 	}
+
+  socketFd = connect_socket;
+
+}
+
+int SendToServer(int irc_socket, const char* message)
+{
+}
+
+int CheckPingStatus(int irc_socket, IRCMessage filled_message)
+{
+	if (filled_message.command == "PING")
+	{
+		std::string pong = std::string("PONG :") + filled_message.trail + std::string("\r\n");
+		std::cout << "LOCAL: Sent string: " << pong;
+	    return SendToServer(irc_socket, pong.c_str());
+    }
+	return 0;
+}
+
+int CreateSocket()
+{
 	return connect_socket;
 }
+
+#endif /* _WIN32 */
+
