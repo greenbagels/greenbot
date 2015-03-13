@@ -4,6 +4,7 @@
 //
 
 #include "irc.h"
+#include "parse.h"
 
 //----------------------------//
 // User Class Implementation. //
@@ -69,7 +70,20 @@ IRCChat::Connect(std::string server,
 IRCMessage*
 IRCChat::GetMessage()
 {
-  return new IRCMessage(socket->Recv());
+  IRCMessage *m = NULL;
+  while (!m)
+  {
+    ParsedMessage p = ParsedMessage(socket->Recv());
+    if (p.command == "PING")
+    {
+      socket->Send("PONG :" + p.trail + "\r\n");
+    }
+    else
+    {
+      m = new IRCMessage(p.trail.substr(0, p.trail.length() - 2));
+    }
+  }
+  return m;
 }
 
 void

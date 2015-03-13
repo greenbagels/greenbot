@@ -5,7 +5,6 @@
 
 #include <regex>
 #include "bot.h"
-#include "parse.h"
 
 //---------------------------//
 // Bot Class Implementation. //
@@ -22,19 +21,12 @@ Bot::Start()
     std::cout << "starting bot..." << std::endl;
     Message *m = chat->GetMessage();
     if (m->GetString() == "") break;
-    ParsedMessage p = ParsedMessage(m->GetString());
-    //std::cout << p.nickname << std::endl;
-    //std::cout << p.command << std::endl;
-    //for (auto i = p.argList.begin(); i != p.argList.end(); ++i)
-    //{
-    //  std::cout << *i << std::endl;
-    //}
-    //std::cout << p.trail << std::endl;
+
     for (const auto &callbackPair : callbacks)
     {
       std::regex e (callbackPair.first);
       std::smatch sm;
-      std::regex_match(p.trail, sm, e);
+      std::regex_match(m->GetString(), sm, e);
       if (sm.size() > 0)
       {
         (callbackPair.second)(sm, m);
