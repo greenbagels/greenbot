@@ -108,27 +108,6 @@ Socket::Socket(std::string server, std::string port)
 	}
 
   socketFd = connect_socket;
-
-}
-
-int SendToServer(int irc_socket, const char* message)
-{
-}
-
-int CheckPingStatus(int irc_socket, IRCMessage filled_message)
-{
-	if (filled_message.command == "PING")
-	{
-		std::string pong = std::string("PONG :") + filled_message.trail + std::string("\r\n");
-		std::cout << "LOCAL: Sent string: " << pong;
-	    return SendToServer(irc_socket, pong.c_str());
-    }
-	return 0;
-}
-
-int CreateSocket()
-{
-	return connect_socket;
 }
 
 #endif /* _WIN32 */
