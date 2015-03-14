@@ -8,14 +8,14 @@
 
 std::deque<std::string> Split(std::string pretext, char delim)
 {
-	std::deque<std::string> sans_delim;
-	std::string tokens;
-	std::stringstream sstream(pretext);
-	while (std::getline(sstream, tokens, delim))
-	{
-		sans_delim.push_back(tokens);
-	}
-	return sans_delim;
+  std::deque<std::string> sans_delim;
+  std::string tokens;
+  std::stringstream sstream(pretext);
+  while (std::getline(sstream, tokens, delim))
+  {
+    sans_delim.push_back(tokens);
+  }
+  return sans_delim;
 }
 
 //----------------------------//
@@ -23,10 +23,10 @@ std::deque<std::string> Split(std::string pretext, char delim)
 //----------------------------//
 IRCUser::IRCUser(void)
 {
-  std::cout << "Creating User" << std::endl;
+  return;
 }
 
-bool
+  bool
 IRCUser::Equals(User *u)
 {
   return true;
@@ -35,88 +35,120 @@ IRCUser::Equals(User *u)
 //-------------------------------//
 // Message Class Implementation. //
 //-------------------------------//
-std::string
+  std::string
 IRCMessage::GetString()
 {
   return str;
 }
 
+  std::string
+IRCMessage::GetFormattedString()
+{
+  std::string arg;
+  for (auto i = argList.begin(); i != argList.end(); ++i)
+  {
+    arg += *i + " ";
+  }
+  return command + " " + arg + ":" + str + "\r\n";
+}
+
 IRCMessage::IRCMessage(std::string s)
 {
+  str = "";
+
   // We don't know if the prefix is actually present.
-	int prefixEnd = -1;
+  int prefixEnd = -1;
 
   // The prefix is actually present.
   if (s.at(0) == ':')
-	{
+  {
     // The end is before the first space.
-		prefixEnd = s.find_first_of(' ');
+    prefixEnd = s.find_first_of(' ');
     // Save the prefix. (Note: we ca further segment it later.)
-		prefix = s.substr(1, prefixEnd - 1);
-		if (prefix.find('!') != prefix.npos)
-		{
-			nickname = prefix.substr(0, prefix.find('!'));
-		}
-	}
+    prefix = s.substr(1, prefixEnd - 1);
+    if (prefix.find('!') != prefix.npos)
+    {
+      nickname = prefix.substr(0, prefix.find('!'));
+    }
+  }
 
-	size_t trailBegin = s.find(" :");
+  size_t trailBegin = s.find(" :");
 
   // Check if there is a trailing message.
-	if (trailBegin != s.npos)
-	{
+  if (trailBegin != s.npos)
+  {
     // Save the trail (char after colon to end of string).
-		str = s.substr(trailBegin + 2, s.npos);
-	}
-  // 
-	argList = Split(s.substr(prefixEnd + 1, (trailBegin - prefixEnd - 1)), ' '); //we want a list of the arguments so we can seperately address them
+    str = s.substr(trailBegin + 2, s.npos);
+  }
+  // We get a list of the arguments.
+  argList = Split(s.substr(prefixEnd + 1, (trailBegin - prefixEnd - 1)), ' ');
 
-	if (!argList.empty())
-	{
-		command = argList.at(0);
-		argList.pop_front();
-	}
+  if (!argList.empty())
+  {
+    command = argList.at(0);
+    argList.pop_front();
+  }
 
   // Trim the \r\n
   if (str.length() > 2) {
     str = str.substr(0, str.length() - 2);
   }
-
 }
 
-IRCUser*
+IRCMessage::IRCMessage()
+{
+  str = "";
+  return;
+}
+
+IRCMessage::~IRCMessage()
+{
+  return;
+}
+
+  IRCUser*
 IRCMessage::GetUser()
 {
   return new IRCUser;
 }
 
-IRCMessage*
+  IRCMessage*
 IRCMessage::Respond(std::string s)
 {
-  return new IRCMessage(s);
+  IRCMessage *m = new IRCMessage();
+  m->str = s;
+  m->command = "PRIVMSG";
+  m->argList = argList;
+  return m;
 }
 
 //----------------------------//
 // Chat Class Implementation. //
 //----------------------------//
-IRCChat::IRCChat(void)
-{
-  std::cout << "Creating Chat" << std::endl;
-}
 
-void
-IRCChat::Connect(std::string server,
-                 std::string port,
-                 std::string user,
-                 std::string password)
+IRCChat::IRCChat(std::string server,
+    std::string port,
+    std::string nick,
+    std::string password)
 {
   socket = new Socket(server, port);
-  socket->Send("PASS PASSWORD\r\n");
-  socket->Send("NICK BlueBot\r\n");
-	socket->Send("USER BlueBot localhost servername :GreenBot\r\n");
-	socket->Send("JOIN #greenbot\r\n");
+  socket->Send("PASS " + password + "\r\n");
+  socket->Send("NICK " + nick + "\r\n");
+  socket->Send("USER " + nick + " localhost servername :" + nick + "\r\n");
 }
 
-IRCMessage*
+IRCChat::~IRCChat(void)
+{
+  delete socket;
+}
+
+  void
+IRCChat::Join(std::string channel)
+{
+  socket->Send("JOIN " + channel + "\r\n");
+}
+
+  IRCMessage*
 IRCChat::GetMessage()
 {
   IRCMessage *m = NULL;
@@ -129,12 +161,30 @@ IRCChat::GetMessage()
       delete m;
     }
   }
+
+#ifdef LOGGING
+  std::cout << "COMMAND: " + m->command + "\nARGUMENTS" << std::endl;
+  for (auto i = m->argList.begin(); i != m->argList.end(); ++i)
+  {
+    std::cout << "\t" + *i << std::endl;
+  }
+  std::cout << "MESSAGE: " + m->str << std::endl;
+  std::cout << "NICKNAME: " + m->nickname << std::endl;
+  std::cout << "USERNAME: " + m->username << std::endl;
+  std::cout << "HOSTNAME: " + m->hostname << std::endl;
+  std::cout << "SERVERNAME: " + m->servername << std::endl;
+  std::cout << "PREFIX: " + m->prefix << std::endl;
+#endif
+
   return m;
 }
 
-void
+  void
 IRCChat::SendMessage(Message *m)
 {
-  return;
+#ifdef LOGGING
+  std::cout << m->GetFormattedString() << std::endl;
+#endif
+  socket->Send(m->GetFormattedString());
 }
 

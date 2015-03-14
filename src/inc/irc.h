@@ -19,6 +19,7 @@ class IRCUser : public User
 class IRCMessage : public Message
 {
   friend class IRCChat;
+
   private:
     // The message string.
     std::string str;
@@ -36,6 +37,10 @@ class IRCMessage : public Message
     // Returns the string to be parsed and used by
     // the bot.
     std::string GetString();
+    
+    // Return the formatted string to be send over
+    // the socket.
+    std::string GetFormattedString();
 
     // Returns the user who sent the message.
     IRCUser *GetUser();
@@ -45,6 +50,10 @@ class IRCMessage : public Message
 
     // Constructor.
     IRCMessage(std::string s);
+    IRCMessage();
+
+    // Destructor
+    ~IRCMessage();
 };
 
 class IRCChat : public Chat
@@ -52,13 +61,22 @@ class IRCChat : public Chat
   private:
     // Holds the connection with the server.
     Socket *socket;
+    std::string nick;
+    std::string user;
+    std::string hostname;
 
   public:
-    // Specify a connection to make.
-    void Connect(std::string server,
-                 std::string port,
-                 std::string user,
-                 std::string password);
+    // Constructor.
+    IRCChat(std::string server,
+        std::string port,
+        std::string user,
+        std::string password);
+
+    // Destructor.
+    ~IRCChat();
+
+    // Join a channel.
+    void Join(std::string channel);
 
     // Get the next available message.
     IRCMessage *GetMessage();
@@ -66,8 +84,6 @@ class IRCChat : public Chat
     // Send a message.
     void SendMessage(Message *m);
 
-    // Constructor.
-    IRCChat();
 };
 
 #endif /* _IRC_H */

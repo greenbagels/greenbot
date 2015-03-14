@@ -14,19 +14,19 @@
 
 #include "socket.h"
 
-void
+  void
 Socket::Send(std::string message)
 {
   if (send(socketFd, message.c_str(), message.length(), 0) == -1)
   {
-      // TODO: Proper exception.
-      std::cout << "Send failed!" << std::endl;
-      close(socketFd);
-      return;
+    // TODO: Proper exception.
+    std::cout << "Send failed!" << std::endl;
+    close(socketFd);
+    return;
   }
 }
 
-std::string
+  std::string
 Socket::Recv()
 {
   char recvbuf[PACKET_SIZE];
@@ -39,11 +39,11 @@ Socket::Recv()
   }
   else if (resultCode == 0)
   {
-		std::cout << "Connection closed" << std::endl;
+    std::cout << "Connection closed" << std::endl;
   }
   else
   {
-		std::cout << "Recv failed" << std::endl;
+    std::cout << "Recv failed" << std::endl;
   }
   return out;
 }
@@ -85,7 +85,7 @@ Socket::Socket(std::string server, std::string port)
     }
   }
 
-	socketFd = connected_socket;
+  socketFd = connected_socket;
 }
 
 #endif /* __unix__ */

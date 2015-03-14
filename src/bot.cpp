@@ -14,12 +14,20 @@ Bot::Bot(Chat *c)
   chat = c;
 }
 
-void
+  void
 Bot::Start()
 {
   while (1) {
     Message *m = chat->GetMessage();
-    if (m->GetString() == "") continue;
+    if (m == NULL)
+    {
+      continue;
+    }
+    if (m->GetString() == "")
+    {
+      delete m;
+      continue;
+    }
 
     for (const auto &callbackPair : callbacks)
     {
@@ -31,14 +39,15 @@ Bot::Start()
         (callbackPair.second)(chat, sm, m);
       }
     }
+    delete m;
   }
 
   return;
 }
 
-void
+  void
 Bot::Register(std::string command,
-              void (*fn)(Chat*, std::smatch, Message*))
+    void (*fn)(Chat*, std::smatch, Message*))
 {
   callbacks[command] = fn;
 }
