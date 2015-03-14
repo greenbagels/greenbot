@@ -15,5 +15,5 @@ make
 If you need to directly contact someone you can find someone in #greenbot at irc.rizon.net (I'm almost always there)
 
 #TODO
--Change modules to based on a shared library scheme
--Add logging functionality
+- Change modules to based on a shared library scheme
+- Add logging functionality
