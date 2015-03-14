@@ -7,6 +7,8 @@
 #include "bot.h"
 #include "irc.h"
 
+#include "js.h"
+
 int IRCRegistration(int irc_socket);
 int MainLoop(int irc_socket);
 
@@ -19,11 +21,19 @@ void botsCall(Chat *c, std::smatch sm, Message *m)
 
 int main()
 {
-  Chat *ircChat = new IRCChat;
-  ircChat->Connect("irc.rizon.net", "6667", "bluebot", "");
-  Bot *b = new Bot(ircChat);
+  // Connect to IRC.
+  Chat *chat = new IRCChat("irc.rizon.net", "6667", "BlueBot", "PASSWORD");
+  chat->Join("#greenbot");
+
+  // Create a bot and register some functionality.
+  Bot *b = new Bot(chat);
   b->Register("\\.bots(.*)", &botsCall);
+  initializeJavascript();
+  b->Register("\\.js (.*)", &evalJavascript);
+
+  // Start the bot.
   b->Start();
+
   return 0;
 }
 

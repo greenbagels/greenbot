@@ -66,11 +66,17 @@ class IRCChat : public Chat
     std::string hostname;
 
   public:
-    // Specify a connection to make.
-    void Connect(std::string server,
+    // Constructor.
+    IRCChat(std::string server,
         std::string port,
         std::string user,
         std::string password);
+
+    // Destructor.
+    ~IRCChat();
+
+    // Join a channel.
+    void Join(std::string channel);
 
     // Get the next available message.
     IRCMessage *GetMessage();
@@ -78,11 +84,6 @@ class IRCChat : public Chat
     // Send a message.
     void SendMessage(Message *m);
 
-    // Constructor.
-    IRCChat();
-
-    // Destructor.
-    ~IRCChat();
 };
 
 #endif /* _IRC_H */
