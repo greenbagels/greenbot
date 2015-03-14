@@ -19,7 +19,15 @@ Bot::Start()
 {
   while (1) {
     Message *m = chat->GetMessage();
-    if (m->GetString() == "") continue;
+    if (m == NULL)
+    {
+      continue;
+    }
+    if (m->GetString() == "")
+    {
+      delete m;
+      continue;
+    }
 
     for (const auto &callbackPair : callbacks)
     {

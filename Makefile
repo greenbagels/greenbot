@@ -15,7 +15,7 @@ else
   OBJS+=$(filter %_posix.o, %_posix.o, $(PLATOBJS))
 endif
 
-CFLAGS+=-O2 -Wall -std=c++11 -lv8
+CFLAGS+=-O0 -Wall -std=c++11 -lv8 -g3 -pedantic
 CFLAGS_DEBUG+=-O0 -g3 -Werror -DDEBUG -pedantic
 LDFLAGS+=
 

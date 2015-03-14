@@ -4,6 +4,7 @@
 //
 
 #include <regex> // std::smatch TODO: make it a generic vector and get rid of this include.
+#include <getopt.h>
 #include "bot.h"
 #include "irc.h"
 
@@ -19,11 +20,41 @@ void botsCall(Chat *c, std::smatch sm, Message *m)
   delete response;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+  // Default params
+  std::string server = "irc.rizon.net";
+  std::string port = "6667";
+  std::string user = "BlueBot";
+  std::string password = "PASSWORD";
+  std::string channel = "#greenbot";
+
+  int c;
+  while((c = getopt(argc, argv, ":S:P:u:p:c")) != EOF)
+  {
+    switch (c)
+    {
+      case 'S':
+        server = std::string(optarg);
+        break;
+      case 'P':
+        port = std::string(optarg);
+        break;
+      case 'p':
+        password = std::string(optarg);
+        break;
+      case 'c':
+        channel = std::string(optarg);
+        break;
+      case 'u':
+        user = std::string(optarg);
+        break;
+    }
+  }
+
   // Connect to IRC.
-  Chat *chat = new IRCChat("irc.rizon.net", "6667", "BlueBot", "PASSWORD");
-  chat->Join("#greenbot");
+  Chat *chat = new IRCChat(server, port, user, password);
+  chat->Join(channel);
 
   // Create a bot and register some functionality.
   Bot *b = new Bot(chat);

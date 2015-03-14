@@ -54,6 +54,8 @@ IRCMessage::GetFormattedString()
 
 IRCMessage::IRCMessage(std::string s)
 {
+  str = "";
+
   // We don't know if the prefix is actually present.
   int prefixEnd = -1;
 
@@ -95,6 +97,7 @@ IRCMessage::IRCMessage(std::string s)
 
 IRCMessage::IRCMessage()
 {
+  str = "";
   return;
 }
 
