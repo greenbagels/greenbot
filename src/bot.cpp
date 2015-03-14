@@ -31,6 +31,7 @@ Bot::Start()
         (callbackPair.second)(chat, sm, m);
       }
     }
+    delete m;
   }
 
   return;

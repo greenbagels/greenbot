@@ -12,8 +12,9 @@ int MainLoop(int irc_socket);
 
 void botsCall(Chat *c, std::smatch sm, Message *m)
 {
-  std::cout << "wooo" << std::endl;
-  c->SendMessage(m->Respond("Hello!"));
+  Message *response = m->Respond("Reporting in! [C++]");
+  c->SendMessage(response);
+  delete response;
 }
 
 int main()

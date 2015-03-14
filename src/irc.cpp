@@ -41,6 +41,17 @@ IRCMessage::GetString()
   return str;
 }
 
+  std::string
+IRCMessage::GetFormattedString()
+{
+  std::string arg;
+  for (auto i = argList.begin(); i != argList.end(); ++i)
+  {
+    arg += *i + " ";
+  }
+  return command + " " + arg + ":" + str + "\r\n";
+}
+
 IRCMessage::IRCMessage(std::string s)
 {
   // We don't know if the prefix is actually present.
@@ -80,7 +91,16 @@ IRCMessage::IRCMessage(std::string s)
   if (str.length() > 2) {
     str = str.substr(0, str.length() - 2);
   }
+}
 
+IRCMessage::IRCMessage()
+{
+  return;
+}
+
+IRCMessage::~IRCMessage()
+{
+  return;
 }
 
   IRCUser*
@@ -92,7 +112,11 @@ IRCMessage::GetUser()
   IRCMessage*
 IRCMessage::Respond(std::string s)
 {
-  return new IRCMessage(s);
+  IRCMessage *m = new IRCMessage();
+  m->str = s;
+  m->command = "PRIVMSG";
+  m->argList = argList;
+  return m;
 }
 
 //----------------------------//
@@ -101,6 +125,11 @@ IRCMessage::Respond(std::string s)
 IRCChat::IRCChat(void)
 {
   std::cout << "Creating Chat" << std::endl;
+}
+
+IRCChat::~IRCChat(void)
+{
+  delete socket;
 }
 
   void
@@ -129,12 +158,30 @@ IRCChat::GetMessage()
       delete m;
     }
   }
+
+#ifdef LOGGING
+  std::cout << "COMMAND: " + m->command + "\nARGUMENTS" << std::endl;
+  for (auto i = m->argList.begin(); i != m->argList.end(); ++i)
+  {
+    std::cout << "\t" + *i << std::endl;
+  }
+  std::cout << "MESSAGE: " + m->str << std::endl;
+  std::cout << "NICKNAME: " + m->nickname << std::endl;
+  std::cout << "USERNAME: " + m->username << std::endl;
+  std::cout << "HOSTNAME: " + m->hostname << std::endl;
+  std::cout << "SERVERNAME: " + m->servername << std::endl;
+  std::cout << "PREFIX: " + m->prefix << std::endl;
+#endif
+
   return m;
 }
 
   void
 IRCChat::SendMessage(Message *m)
 {
-  return;
+#ifdef LOGGING
+  std::cout << m->GetFormattedString() << std::endl;
+#endif
+  socket->Send(m->GetFormattedString());
 }
 
