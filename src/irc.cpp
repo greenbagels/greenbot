@@ -23,7 +23,7 @@ std::deque<std::string> Split(std::string pretext, char delim)
 //----------------------------//
 IRCUser::IRCUser(void)
 {
-  std::cout << "Creating User" << std::endl;
+  return;
 }
 
   bool
@@ -54,6 +54,8 @@ IRCMessage::GetFormattedString()
 
 IRCMessage::IRCMessage(std::string s)
 {
+  str = "";
+
   // We don't know if the prefix is actually present.
   int prefixEnd = -1;
 
@@ -95,6 +97,7 @@ IRCMessage::IRCMessage(std::string s)
 
 IRCMessage::IRCMessage()
 {
+  str = "";
   return;
 }
 
@@ -122,9 +125,16 @@ IRCMessage::Respond(std::string s)
 //----------------------------//
 // Chat Class Implementation. //
 //----------------------------//
-IRCChat::IRCChat(void)
+
+IRCChat::IRCChat(std::string server,
+    std::string port,
+    std::string nick,
+    std::string password)
 {
-  std::cout << "Creating Chat" << std::endl;
+  socket = new Socket(server, port);
+  socket->Send("PASS " + password + "\r\n");
+  socket->Send("NICK " + nick + "\r\n");
+  socket->Send("USER " + nick + " localhost servername :" + nick + "\r\n");
 }
 
 IRCChat::~IRCChat(void)
@@ -133,16 +143,9 @@ IRCChat::~IRCChat(void)
 }
 
   void
-IRCChat::Connect(std::string server,
-    std::string port,
-    std::string user,
-    std::string password)
+IRCChat::Join(std::string channel)
 {
-  socket = new Socket(server, port);
-  socket->Send("PASS PASSWORD\r\n");
-  socket->Send("NICK BlueBot\r\n");
-  socket->Send("USER BlueBot localhost servername :GreenBot\r\n");
-  socket->Send("JOIN #greenbot\r\n");
+  socket->Send("JOIN " + channel + "\r\n");
 }
 
   IRCMessage*

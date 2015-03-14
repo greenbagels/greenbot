@@ -38,11 +38,16 @@ class Message
 class Chat
 {
   public:
-    // Specify a connection to make.
-    virtual void Connect(std::string server,
-        std::string port,
-        std::string user,
-        std::string password) = 0;
+    // Note: No constructor is specified.  This
+    // allows flexibility in getting parameters
+    // specific to the chat protocol (e.g. a
+    // server port or password).
+
+    // Virtual destructor.
+    virtual ~Chat(){}
+
+    // Join services.
+    virtual void Join(std::string) = 0;
 
     // Get the next available message.  This should
     // be a blocking function.
@@ -54,8 +59,6 @@ class Chat
     // Message::Respond function.
     virtual void SendMessage(Message *m) = 0;
 
-    // Virtual destructor.
-    virtual ~Chat(){}
 };
 
 #endif /* _CHAT_H */
