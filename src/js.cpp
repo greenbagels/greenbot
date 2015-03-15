@@ -1,33 +1,25 @@
 // @file modules/js.cpp
 // @brief Javascript interpretter module.
 //
-#include <v8.h>
-#include <unistd.h>
 #include <thread>
-#include <mutex>
 #include "js.h"
 
-static std::mutex mtx;
-static bool kill = false;
-
-void killJavascript(v8::Isolate *isolate)
+  bool 
+JavascriptEval::Match(Message *m)
 {
-  sleep(.5);
-  mtx.lock();
-  if (kill)
+  if (m->GetString().substr(0,4) == ".js ")
   {
-    v8::V8::TerminateExecution(isolate);
+    response = m->Respond("Error processing request.");
+    script = m->GetString().substr(4);
+    return true;
   }
-  mtx.unlock();
+  return false;
 }
 
-void initializeJavascript()
+  void
+JavascriptEval::Run()
 {
-  v8::V8::Initialize();
-}
-
-void evalJavascript(Chat *c, std::smatch sm, Message *m)
-{
+  // First attempt to run the saved script.
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
   if(!isolate)
   {
@@ -38,12 +30,13 @@ void evalJavascript(Chat *c, std::smatch sm, Message *m)
   v8::Handle<v8::Context> context = v8::Context::New(isolate);
   v8::Context::Scope context_scope(context);
 
-  v8::Handle<v8::String> source = v8::String::NewFromUtf8(isolate, sm.str(1).c_str());
-  v8::Handle<v8::Script> script = v8::Script::Compile(source);
+  v8::Handle<v8::String> source = v8::String::NewFromUtf8(isolate, script.c_str());
+  v8::Handle<v8::Script> compiled = v8::Script::Compile(source);
 
+  // Spawn a thread to kill the script if it takes too long.
   kill = true;
-  std::thread killer(killJavascript, isolate);
-  v8::Handle<v8::Value> result = script->Run();
+  std::thread killer(JavascriptEval::killJavascript, isolate, &mtx, &kill);
+  v8::Handle<v8::Value> result = compiled->Run();
   mtx.lock();
   kill = false;
   mtx.unlock();
@@ -53,15 +46,23 @@ void evalJavascript(Chat *c, std::smatch sm, Message *m)
   
   if (*utf8)
   {
-    Message *response = m->Respond(std::string(*utf8));
-    c->SendMessage(response);
-    delete response;
+    // Update the old response.
+    response->Update(std::string(*utf8));
+    chat->SendMessage(response);
   }
   else
   {
-    Message *response = m->Respond(std::string("Error processing request."));
-    c->SendMessage(response);
-    delete response;
+    // Use the default error response.
+    chat->SendMessage(response);
   }
+
+  // Delete the response object in both cases.
+  delete response;
+}
+
+JavascriptEval::JavascriptEval(Chat *c)
+{
+  v8::V8::Initialize();
+  chat = c;
 }
 

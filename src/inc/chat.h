@@ -31,6 +31,10 @@ class Message
     // the information it needs.
     virtual Message *Respond(std::string s) = 0;
 
+    // Modify the string of a message.  This allows
+    // a created response to be updated later.
+    virtual void Update(std::string s) = 0;
+
     // Virtual destructor.
     virtual ~Message(){};
 };

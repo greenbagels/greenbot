@@ -29,14 +29,11 @@ Bot::Start()
       continue;
     }
 
-    for (const auto &callbackPair : callbacks)
-    {
-      std::regex e (callbackPair.first);
-      std::smatch sm;
-      std::regex_match(m->GetString(), sm, e);
-      if (sm.size() > 0)
+    for(auto it = callbacks.begin(); it != callbacks.end(); ++it) {
+      if ((*it)->Match(m))
       {
-        (callbackPair.second)(chat, sm, m);
+        // TODO place this on an event loop of some kind.
+        (*it)->Run();
       }
     }
     delete m;
@@ -46,9 +43,8 @@ Bot::Start()
 }
 
   void
-Bot::Register(std::string command,
-    void (*fn)(Chat*, std::smatch, Message*))
+Bot::Register(Callback *callback)
 {
-  callbacks[command] = fn;
+  callbacks.push_back(callback);
 }
 

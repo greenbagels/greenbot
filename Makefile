@@ -15,11 +15,16 @@ else
   OBJS+=$(filter %_posix.o, %_posix.o, $(PLATOBJS))
 endif
 
-CFLAGS+=-O0 -Wall -std=c++11 -lv8 -g3 -pedantic
-CFLAGS_DEBUG+=-O0 -g3 -Werror -DDEBUG -pedantic
+CFLAGS+=-O3 -Wall -std=c++11 -lv8
+CFLAGS_DEBUG+=-O0 -g3 -Werror -DLOGGING -pedantic
 LDFLAGS+=
 
+.PHONY: all clean debug
+
 all: greenbot
+
+debug: CFLAGS := $(CFLAGS) $(CFLAGS_DEBUG)
+debug: clean all
 
 greenbot: $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)

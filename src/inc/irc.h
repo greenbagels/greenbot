@@ -48,6 +48,9 @@ class IRCMessage : public Message
     // Generate a new message given an old message.
     IRCMessage *Respond(std::string s);
 
+    // Update the internally stored string.
+    void Update(std::string s);
+
     // Constructor.
     IRCMessage(std::string s);
     IRCMessage();

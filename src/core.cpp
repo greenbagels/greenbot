@@ -7,18 +7,37 @@
 #include <getopt.h>
 #include "bot.h"
 #include "irc.h"
-
 #include "js.h"
 
-int IRCRegistration(int irc_socket);
-int MainLoop(int irc_socket);
-
-void botsCall(Chat *c, std::smatch sm, Message *m)
+class BotsCall : public Callback
 {
-  Message *response = m->Respond("Reporting in! [C++]");
-  c->SendMessage(response);
-  delete response;
-}
+  private:
+    Chat *chat;
+    Message *response;
+
+  public:
+    bool Match(Message *m)
+    {
+      if (m->GetString().substr(0,5) == ".bots")
+      {
+        response = m->Respond("Reporting in! [C++]");
+        return true;
+      }
+      return false;
+    }
+
+    void Run()
+    {
+      chat->SendMessage(response);
+      delete response;
+    }
+
+    BotsCall(Chat *c)
+    {
+      chat = c;
+    }
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -58,9 +77,8 @@ int main(int argc, char *argv[])
 
   // Create a bot and register some functionality.
   Bot *b = new Bot(chat);
-  b->Register("\\.bots(.*)", &botsCall);
-  initializeJavascript();
-  b->Register("\\.js (.*)", &evalJavascript);
+  b->Register(new BotsCall(chat));
+  b->Register(new JavascriptEval(chat));
 
   // Start the bot.
   b->Start();
