@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
   // Create a bot and register some functionality.
   Bot *b = new Bot(chat);
   b->Register(new BotsCall(chat));
-  //b->Register(new JavascriptEval(chat));
+  b->Register(new JavascriptEval(chat));
 
   // Start the bot.
   b->Start();
