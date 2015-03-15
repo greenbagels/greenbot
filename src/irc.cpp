@@ -122,6 +122,12 @@ IRCMessage::Respond(std::string s)
   return m;
 }
 
+  void
+IRCMessage::Update(std::string s)
+{
+  str = s;
+}
+
 //----------------------------//
 // Chat Class Implementation. //
 //----------------------------//

@@ -5,11 +5,36 @@
 #ifndef _JS_H
 #define _JS_H
 
+#include <mutex>
+#include <v8.h>
+#include <unistd.h>
 #include "chat.h"
-#include <regex>
+#include "bot.h"
 
-void initializeJavascript();
-void evalJavascript(Chat *c, std::smatch sm, Message *m);
+class JavascriptEval : public Callback
+{
+  private:
+    Chat *chat;
+    Message *response;
+    std::string script;
+    std::mutex mtx;
+    bool kill = false;
+    static void killJavascript(v8::Isolate *isolate, std::mutex *mtx, bool *kill)
+    {
+      sleep(.5);
+      mtx->lock();
+      if (*kill)
+      {
+        v8::V8::TerminateExecution(isolate);
+      }
+      mtx->unlock();
+    }
+
+  public:
+    bool Match(Message *m);
+    void Run();
+    JavascriptEval(Chat *c);
+};
 
 #endif /* _JS_H */
 
