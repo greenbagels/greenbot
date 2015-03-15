@@ -1,0 +1,10 @@
+# Binaries
+greenbot
+*.o
+
+# Objects folder
+objs/
+
+# Temp files
+*.swp
+*.swo

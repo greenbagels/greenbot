@@ -1,23 +1,30 @@
 CC=g++
+
+# Main Bot
 OBJDIR=objs
 SRCDIR=src
 INCDIR=$(SRCDIR)/inc
-CFLAGS+=-I$(INCDIR)
-
 SRCS=$(wildcard $(SRCDIR)/*.cpp)
-PLATSPECIFIC=$(wildcard $(SRCDIR)/socket_*.cpp) # Not strictly necessary because of the #defines in the files.
-OBJS+=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(filter-out $(PLATSPECIFIC), $(SRCS)))
-PLATOBJS+=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(PLATSPECIFIC))
+OBJS=$(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRCS))
 
-ifeq ($(OS),Windows_NT)
-  OBJS+=$(filter %_windows.o, %_windows.o, $(PLATOBJS))
-else
-  OBJS+=$(filter %_posix.o, %_posix.o, $(PLATOBJS))
-endif
+# Modules
+MODULEDIR=modules
+MODULEOBJDIR=objs/$(MODULEDIR)
+MODULEINCDIR=$(MODULEDIR)/inc
+MODULES=$(wildcard $(MODULEDIR)/*.cpp)
+MODULEOBJS=$(patsubst $(MODULEDIR)/%.cpp, $(MODULEOBJDIR)/%.o, $(MODULES))
 
-CFLAGS+=-O3 -Wall -std=c++11 -lv8
+# Protocols
+PROTODIR=protocols
+PROTOOBJDIR=objs/$(PROTODIR)
+PROTOINCDIR=$(PROTODIR)/inc
+PROTOS=$(wildcard $(PROTODIR)/*.cpp)
+PROTOOBJS=$(patsubst $(PROTODIR)/%.cpp, $(PROTOOBJDIR)/%.o, $(PROTOS))
+
+# Flags
+CFLAGS+=-I$(INCDIR) -I$(MODULEINCDIR) -I$(PROTOINCDIR) -O3 -Wall -std=c++11
 CFLAGS_DEBUG+=-O0 -g3 -Werror -DLOGGING -pedantic
-LDFLAGS+=
+LDFLAGS+=-lv8
 
 .PHONY: all clean debug
 
@@ -26,12 +33,26 @@ all: greenbot
 debug: CFLAGS := $(CFLAGS) $(CFLAGS_DEBUG)
 debug: clean all
 
-greenbot: $(OBJS)
+greenbot: $(OBJS) $(MODULEOBJS) $(PROTOOBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+
+$(MODULEOBJS): | $(MODULEOBJDIR)
+$(MODULEOBJDIR):
+	mkdir -p $@
+
+$(PROTOOBJS): | $(PROTOOBJDIR)
+$(PROTOOBJDIR):
+	mkdir -p $@
 
 $(OBJS): | $(OBJDIR)
 $(OBJDIR):
 	mkdir -p $@
+
+$(MODULEOBJDIR)/%.o: $(MODULEDIR)/%.cpp $(wildcard $(MODULEINCDIR)/*.h) Makefile
+	$(CC) $(CFLAGS) $< -c -o $@
+
+$(PROTOOBJDIR)/%.o: $(PROTODIR)/%.cpp $(wildcard $(PROTOINCDIR)/*.h) Makefile
+	$(CC) $(CFLAGS) $< -c -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(wildcard $(INCDIR)/*.h) Makefile
 	$(CC) $(CFLAGS) $< -c -o $@
