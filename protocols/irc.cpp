@@ -165,6 +165,7 @@ IRCChat::GetMessage()
     {
       socket->Send("PONG :" + m->str + "\r\n");
       delete m;
+      m = NULL;
     }
   }
 
