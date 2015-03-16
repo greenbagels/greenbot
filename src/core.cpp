@@ -89,7 +89,14 @@ int main(int argc, char *argv[])
   // Default params
   std::string server = "irc.rizon.net";
   std::string port = "6667";
-  std::string user = "BlueBot";
+  auto randchar = []() -> char
+  {
+    const char charset[] = "0123456789";
+    return charset[rand() % 10];
+  };
+  std::string user(10, 0);
+  std::generate_n(user.begin(), 10, randchar);
+  user = "TestBot" + user;
   std::string password = "PASSWORD";
   std::string channel = "#greenbot";
 
