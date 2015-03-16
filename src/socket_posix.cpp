@@ -39,11 +39,13 @@ Socket::Recv()
   }
   else if (resultCode == 0)
   {
-    std::cout << "Connection closed" << std::endl;
+    std::cout << "Connection closed." << std::endl;
+    return "";
   }
   else
   {
-    std::cout << "Recv failed" << std::endl;
+    std::cout << "Recv failed." << std::endl;
+    return "";
   }
   return out;
 }

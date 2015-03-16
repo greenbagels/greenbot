@@ -28,10 +28,13 @@ LDFLAGS+=-lv8
 
 .PHONY: all clean debug
 
-all: greenbot
+all: greenbot greenbot.conf
 
 debug: CFLAGS := $(CFLAGS) $(CFLAGS_DEBUG)
 debug: clean all
+
+greenbot.conf:
+	echo -e "user = testbot""$$RANDOM""\nserver = irc.rizon.net\nport = 6667\npassword = PASSWORD\nchannel = #greenbot" > greenbot.conf
 
 greenbot: $(OBJS) $(MODULEOBJS) $(PROTOOBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)

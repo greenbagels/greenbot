@@ -38,14 +38,14 @@ class BotsCall : public Callback
     }
 };
 
-void CheckConfig(std::string &server, std::string &port, std::string &user, std::string &password, std::string &channel)
+int LoadConfig(std::string &server, std::string &port, std::string &user, std::string &password, std::string &channel)
 {
   std::ifstream config_file;
   config_file.open("greenbot.conf");
   if (!config_file)
   {
     std::cout << "Could not open config file!\n";
-    return;
+    return -1;
   }
   size_t pos;
   std::string search_result;
@@ -82,25 +82,21 @@ void CheckConfig(std::string &server, std::string &port, std::string &user, std:
     }
   }
   config_file.close();
+  return 0;
 }
 
 int main(int argc, char *argv[])
 {
   // Default params
-  std::string server = "irc.rizon.net";
-  std::string port = "6667";
-  auto randchar = []() -> char
+  std::string server;
+  std::string port;
+  std::string user;
+  std::string password;
+  std::string channel;
+  if (LoadConfig(server, port, user, password, channel) < 0)
   {
-    const char charset[] = "0123456789";
-    return charset[rand() % 10];
-  };
-  std::string user(10, 0);
-  std::generate_n(user.begin(), 10, randchar);
-  user = "TestBot" + user;
-  std::string password = "PASSWORD";
-  std::string channel = "#greenbot";
-
-  CheckConfig(server, port, user, password, channel);
+    return -1;
+  }
 
   // Connect to IRC.
   Chat *chat = new IRCChat(server, port, user, password);
