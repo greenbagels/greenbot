@@ -49,15 +49,8 @@ void CheckConfig(std::string &server, std::string &port, std::string &user, std:
   }
   size_t pos;
   std::string search_result;
-  while (config_file.good())
+  while (getline(config_file, search_result))
   {
-    getline(config_file, search_result);
-   
-    if (config_file.eof())
-    {
-      break;
-    }
-   
     pos = search_result.find("server = ");
     if (pos != search_result.npos)
     {

@@ -61,6 +61,7 @@ Socket::Socket(std::string server, std::string port)
   if (result != 0)
   {
     std::cout << "getaddrinfo failed! " << gai_strerror(result);
+    return;
   }
   int connected_socket = -1;
   connected_socket = socket(host_list->ai_family, host_list->ai_socktype, host_list->ai_protocol);
