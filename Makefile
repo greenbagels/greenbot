@@ -34,7 +34,11 @@ debug: CFLAGS := $(CFLAGS) $(CFLAGS_DEBUG)
 debug: clean all
 
 greenbot.conf:
-	echo -e "user = testbot""$$RANDOM""\nserver = irc.rizon.net\nport = 6667\npassword = PASSWORD\nchannel = #greenbot" > greenbot.conf
+	echo "user = testbot""$$RANDOM" > greenbot.conf
+	echo "server = irc.rizon.net" >> greenbot.conf
+	echo "port = 6667" >> greenbot.conf
+	echo "password = PASSWORD" >> greenbot.conf
+	echo "channel = #greenbot" >> greenbot.conf
 
 greenbot: $(OBJS) $(MODULEOBJS) $(PROTOOBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
