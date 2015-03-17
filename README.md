@@ -7,6 +7,7 @@ Prerequisites:
 - V8 (the javascript engine) for the JS module
 
 ```
+./configure
 make
 ./greenbot
 ```

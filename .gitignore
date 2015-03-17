@@ -2,6 +2,11 @@
 greenbot
 *.o
 
+# Generated files
+src/inc/modules.h
+libs.mk
+greenbot.conf
+
 # Objects folder
 objs/
 
