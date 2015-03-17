@@ -7,36 +7,7 @@
 #include <fstream>
 #include "bot.h"
 #include "irc.h"
-#include "js.h"
-
-class BotsCall : public Callback
-{
-  private:
-    Chat *chat;
-    Message *response;
-
-  public:
-    bool Match(Message *m)
-    {
-      if (m->GetString().substr(0,5) == ".bots")
-      {
-        response = m->Respond("Reporting in! [C++]");
-        return true;
-      }
-      return false;
-    }
-
-    void Run()
-    {
-      chat->SendMessage(response);
-      delete response;
-    }
-
-    BotsCall(Chat *c)
-    {
-      chat = c;
-    }
-};
+#include "modules.h"
 
 int LoadConfig(std::string &server, std::string &port, std::string &user, std::string &password, std::string &channel)
 {
@@ -104,8 +75,7 @@ int main(int argc, char *argv[])
 
   // Create a bot and register some functionality.
   Bot *b = new Bot(chat);
-  b->Register(new BotsCall(chat));
-  b->Register(new JavascriptEval(chat));
+  LoadModules(b, chat);
 
   // Start the bot.
   b->Start();

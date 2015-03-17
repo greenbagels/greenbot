@@ -1,0 +1,67 @@
+###################################
+##                               ##
+##  Generate the modules.h file  ##
+##                               ##
+###################################
+
+moduleheader=src/inc/modules.h
+
+echo "// @file src/inc/modules.h
+// @brief A generated header.
+//
+
+#ifndef _MODULES_H
+#define _MODULES_H
+
+#include <vector>
+#include \"chat.h\"
+
+// Module includes" > $moduleheader
+
+for f in modules/inc/*
+do
+  file=$(basename "$f")
+  echo "#include \"$file\"" >> $moduleheader
+done
+
+echo "
+void LoadModules(Bot *b, Chat *c)
+{
+" >> $moduleheader
+
+for f in modules/inc/*
+do
+  file=$(basename "$f")
+  string=`head -n 1 $f`
+  if [[ $string == "//MODULE:"* ]]
+  then
+    module=${string:9}; # skip over //MODULE:
+    echo "  b->Register(new $module(c));" >> $moduleheader
+  fi
+done
+
+echo "}
+
+#endif /* _MODULES_H */" >> $moduleheader
+
+#################################
+##                             ##
+##  Generate the libs.mk file  ##
+##                             ##
+#################################
+
+libsmk=libs.mk
+
+echo "" > $libsmk
+
+for f in modules/inc/*
+do
+  file=$(basename "$f")
+  string=`head -n 2 $f|tail -n 1`
+  if [[ $string == "//LIBS:"* ]]
+  then
+    libs=${string:7}; # skip over //LIBS:
+    echo "LDFLAGS+=$libs" >> $libsmk
+  fi
+done
+

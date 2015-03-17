@@ -24,7 +24,7 @@ PROTOOBJS=$(patsubst $(PROTODIR)/%.cpp, $(PROTOOBJDIR)/%.o, $(PROTOS))
 # Flags
 CFLAGS+=-I$(INCDIR) -I$(MODULEINCDIR) -I$(PROTOINCDIR) -O3 -Wall -std=c++11
 CFLAGS_DEBUG+=-O0 -g3 -Werror -DLOGGING -pedantic
-LDFLAGS+=-lv8
+include libs.mk # generated file
 
 .PHONY: all clean debug
 

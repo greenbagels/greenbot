@@ -1,3 +1,5 @@
+//MODULE:JavascriptEval
+//LIBS:-lv8
 // @file modules/inc/js.h
 // @brief Javascript interpretter module.
 //
