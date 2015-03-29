@@ -4,6 +4,7 @@
 //
 
 #include <sstream> // std::stringstream
+#include <algorithm>
 #include "irc.h"
 
 std::deque<std::string> Split(std::string pretext, char delim)
@@ -88,6 +89,10 @@ IRCMessage::IRCMessage(std::string s)
     command = argList.at(0);
     argList.pop_front();
   }
+  else
+  {
+    command = "";
+  }
 
   // Trim the \r\n
   if (str.length() > 2) {
@@ -166,6 +171,14 @@ IRCChat::GetMessage()
       socket->Send("PONG :" + m->str + "\r\n");
       delete m;
       m = NULL;
+      continue;
+    }
+    if (m->command == "KICK")
+    {
+      this->Join(m->argList[0]);
+      delete m;
+      m = NULL;
+      continue;
     }
   }
 

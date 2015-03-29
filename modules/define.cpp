@@ -50,6 +50,10 @@ Define::Match(Message *m)
   {
     std::string key = "#" + splits[1];
     std::string match = implode(std::vector<std::string>(splits.begin() + 2, splits.end()), ' ');
+    if (match[0] == '.')
+    {
+      match = " " + match;
+    }
     response = m->Respond("Registered " + key + " -> " + match);
     matches[key] = match;
     return true;

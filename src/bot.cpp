@@ -26,9 +26,7 @@ Bot::Start()
     if (m->GetString() == "")
     {
       delete m;
-      std::cout << "Bot exiting..." << std::endl;
       continue;
-      break;
     }
 
     for(auto it = callbacks.begin(); it != callbacks.end(); ++it) {
