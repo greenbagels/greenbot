@@ -27,6 +27,7 @@ Bot::Start()
     {
       delete m;
       std::cout << "Bot exiting..." << std::endl;
+      continue;
       break;
     }
 
