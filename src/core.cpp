@@ -8,8 +8,9 @@
 #include "bot.h"
 #include "irc.h"
 #include "modules.h"
+#include "util.h"
 
-int LoadConfig(std::string &server, std::string &port, std::string &user, std::string &password, std::string &channel)
+int LoadConfig(std::string &server, std::string &port, std::string &user, std::string &password, std::vector<std::string> &channels)
 {
   std::ifstream config_file;
   config_file.open("greenbot.conf");
@@ -46,10 +47,10 @@ int LoadConfig(std::string &server, std::string &port, std::string &user, std::s
       password = search_result.substr(pos + 11); // 11 == strlen("password = ");
     }
 
-    pos = search_result.find("channel = ");
+    pos = search_result.find("channels = ");
     if (pos != search_result.npos)
     {
-      channel = search_result.substr(pos + 10); // 10 == strlen("channel = ");
+      channels = split(search_result.substr(pos + 11), ','); // 11 == strlen("channels = ");
     }
   }
   config_file.close();
@@ -63,15 +64,18 @@ int main(int argc, char *argv[])
   std::string port;
   std::string user;
   std::string password;
-  std::string channel;
-  if (LoadConfig(server, port, user, password, channel) < 0)
+  std::vector<std::string> channels;
+  if (LoadConfig(server, port, user, password, channels) < 0)
   {
     return -1;
   }
 
   // Connect to IRC.
   Chat *chat = new IRCChat(server, port, user, password);
-  chat->Join(channel);
+  for (auto it = channels.begin(); it != channels.end(); it++)
+  {
+    chat->Join(*it);
+  }
 
   // Create a bot and register some functionality.
   Bot *b = new Bot(chat);

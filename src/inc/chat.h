@@ -6,6 +6,7 @@
 class User
 {
   public:
+    std::string nickname;
     // Return true if the users are the same else
     // return false.
     virtual bool Equals(User *u) = 0;
@@ -14,6 +15,9 @@ class User
 class Message
 {
   public:
+    // Returns the permissions of the sender.
+    virtual int GetPermissions() = 0;
+
     // Returns the string to be parsed and used by
     // the bot.
     virtual std::string GetString() = 0;
@@ -52,6 +56,8 @@ class Chat
 
     // Join services.
     virtual void Join(std::string) = 0;
+    // Part services.
+    virtual void Part(std::string) = 0;
 
     // Get the next available message.  This should
     // be a blocking function.

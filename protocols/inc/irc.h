@@ -8,12 +8,15 @@
 class IRCUser : public User
 {
   public:
+    // Username.
+    std::string nickname;
+
     // Return true if the users are the same else
     // return false.
     bool Equals(User *u);
 
     // Constructor.
-    IRCUser();
+    IRCUser(std::string u);
 };
 
 class IRCMessage : public Message
@@ -33,7 +36,16 @@ class IRCMessage : public Message
     std::string command;
     std::deque<std::string> argList;
 
+    // User.
+    IRCUser *user;
+    
+    // Permissions.
+    int permissions;
+
   public:
+    // Returns the permissions of the sender.
+    int GetPermissions();
+
     // Returns the string to be parsed and used by
     // the bot.
     std::string GetString();
@@ -80,6 +92,8 @@ class IRCChat : public Chat
 
     // Join a channel.
     void Join(std::string channel);
+    // Part a channel.
+    void Part(std::string channel);
 
     // Get the next available message.
     IRCMessage *GetMessage();

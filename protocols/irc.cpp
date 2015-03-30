@@ -22,15 +22,16 @@ std::deque<std::string> Split(std::string pretext, char delim)
 //----------------------------//
 // User Class Implementation. //
 //----------------------------//
-IRCUser::IRCUser(void)
+IRCUser::IRCUser(std::string user)
 {
+  nickname = user;
   return;
 }
 
   bool
 IRCUser::Equals(User *u)
 {
-  return true;
+  return nickname == u->nickname;
 }
 
 //-------------------------------//
@@ -98,6 +99,8 @@ IRCMessage::IRCMessage(std::string s)
   if (str.length() > 2) {
     str = str.substr(0, str.length() - 2);
   }
+
+  user = new IRCUser(nickname);
 }
 
 IRCMessage::IRCMessage()
@@ -114,7 +117,13 @@ IRCMessage::~IRCMessage()
   IRCUser*
 IRCMessage::GetUser()
 {
-  return new IRCUser;
+  return user;
+}
+
+  int
+IRCMessage::GetPermissions()
+{
+  return permissions;
 }
 
   IRCMessage*
@@ -164,6 +173,12 @@ IRCChat::Join(std::string channel)
   socket->Send("JOIN " + channel + "\r\n");
 }
 
+  void
+IRCChat::Part(std::string channel)
+{
+  socket->Send("PART " + channel + "\r\n");
+}
+
   IRCMessage*
 IRCChat::GetMessage()
 {
@@ -200,6 +215,15 @@ IRCChat::GetMessage()
   std::cout << "SERVERNAME: " + m->servername << std::endl;
   std::cout << "PREFIX: " + m->prefix << std::endl;
 #endif
+
+  if (m->nickname == "emgram769")
+  {
+    m->permissions = 1;
+  }
+  else
+  {
+    m->permissions = 0;
+  }
 
   return m;
 }

@@ -2,45 +2,11 @@
 // @brief Allows #define macro to be used.
 //
 
-#include "define.h"
 #include <regex>
-
-  std::vector<std::string>
-&split(const std::string &s, char delim, std::vector<std::string> &elems) {
-  std::stringstream ss(s);
-  std::string item;
-  while (std::getline(ss, item, delim)) {
-    elems.push_back(item);
-  }
-  return elems;
-}
-
-  std::vector<std::string>
-split(const std::string &s, char delim) {
-  std::vector<std::string> elems;
-  split(s, delim, elems);
-  return elems;
-}
-  static std::string&
-implode(const std::vector<std::string>& elems, char delim, std::string& s)
-{
-  for (std::vector<std::string>::const_iterator ii = elems.begin(); ii != elems.end(); ++ii)
-  {
-    s += (*ii);
-    if ( ii + 1 != elems.end() ) {
-      s += delim;
-    }
-  }
-
-  return s;
-}
-
-  static std::string
-implode(const std::vector<std::string>& elems, char delim)
-{
-  std::string s;
-  return implode(elems, delim, s);
-}
+#include <vector>
+#include <sstream>
+#include "define.h"
+#include "util.h"
 
   std::map<std::string, std::string>::iterator
 iterate_find(std::map<std::string, std::string> &m, std::string str)
@@ -62,6 +28,11 @@ iterate_find(std::map<std::string, std::string> &m, std::string str)
 Define::Match(Message *m)
 {
   std::string str = m->GetString();
+  if (str == "")
+  {
+    return false;
+  }
+
   std::vector<std::string> splits = split(str, ' ');
   if (splits.size() >= 3 && splits[0] == "#define")
   {

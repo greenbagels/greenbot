@@ -7,8 +7,6 @@
 #define _DEFINE_H
 
 #include <map>
-#include <sstream>
-#include <vector>
 #include "chat.h"
 #include "bot.h"
 
