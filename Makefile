@@ -38,7 +38,7 @@ greenbot.conf:
 	echo "server = irc.rizon.net" >> greenbot.conf
 	echo "port = 6667" >> greenbot.conf
 	echo "password = PASSWORD" >> greenbot.conf
-	echo "channel = #greenbot" >> greenbot.conf
+	echo "channels = #greenbot" >> greenbot.conf
 
 greenbot: $(OBJS) $(MODULEOBJS) $(PROTOOBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
