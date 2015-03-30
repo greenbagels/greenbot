@@ -22,7 +22,7 @@ PROTOS=$(wildcard $(PROTODIR)/*.cpp)
 PROTOOBJS=$(patsubst $(PROTODIR)/%.cpp, $(PROTOOBJDIR)/%.o, $(PROTOS))
 
 # Flags
-CFLAGS+=-I$(INCDIR) -I$(MODULEINCDIR) -I$(PROTOINCDIR) -O3 -Wall -std=c++11
+CFLAGS+=-I$(INCDIR) -I$(MODULEINCDIR) -I$(PROTOINCDIR) -O3 -Wall -std=c++11 -std=c++1y
 CFLAGS_DEBUG+=-O0 -g3 -Werror -DLOGGING -pedantic
 include libs.mk # generated file
 

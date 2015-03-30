@@ -124,6 +124,11 @@ IRCMessage::Respond(std::string s)
   m->str = s;
   m->command = "PRIVMSG";
   m->argList = argList;
+  if (m->argList[0][0] != '#' && m->argList[0][0] != '&')
+  {
+    m->argList[0] = nickname;
+  }
+
   return m;
 }
 
@@ -168,7 +173,7 @@ IRCChat::GetMessage()
     m = new IRCMessage(socket->Recv());
     if (m->command == "PING")
     {
-      socket->Send("PONG :" + m->str + "\r\n");
+      socket->Send("PONG " + m->servername + " " + m->str + "\r\n");
       delete m;
       m = NULL;
       continue;
