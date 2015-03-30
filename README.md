@@ -22,7 +22,7 @@ In order for the files to be recognized they will need a header of the form
 where `[ClassName]` is the name of the class that implements the `Callback` class and `[libname]` are any library dependencies the module has.  If there are no library dependencies, you may omit the `//LIBS` line.  Check out the modules currently added for examples.
 
 # Contact
-If you need to directly contact someone you can find someone in #greenbot at irc.rizon.net (I'm almost always there)
+If you need to directly contact someone you can join #greenbot on irc.rizon.net (someone is almost always there)
 
 #TODO
 - Change modules to based on a shared library scheme
