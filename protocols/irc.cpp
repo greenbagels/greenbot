@@ -51,7 +51,7 @@ IRCMessage::GetFormattedString()
   {
     arg += *i + " ";
   }
-  return command + " " + arg + ":" + str + "\r\n";
+  return command + " " + arg + ":" + "\u200b" +  str + "\r\n";
 }
 
 IRCMessage::IRCMessage(std::string s)

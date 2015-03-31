@@ -39,7 +39,7 @@ Define::Match(Message *m)
     std::string key = "#" + splits[1];
 
     // Prevent bot triggers.
-    std::string match = "\u200b" + implode(std::vector<std::string>(splits.begin() + 2, splits.end()), ' ');
+    std::string match = implode(std::vector<std::string>(splits.begin() + 2, splits.end()), ' ');
     response = m->Respond("Registered " + key + " -> " + match);
     matches[key] = match;
     return true;

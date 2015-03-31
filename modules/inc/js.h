@@ -23,7 +23,7 @@ class JavascriptEval : public Callback
     bool kill = false;
     static void killJavascript(v8::Isolate *isolate, std::mutex *mtx, bool *kill)
     {
-      sleep(.5);
+      sleep(3);
       mtx->lock();
       if (*kill)
       {
