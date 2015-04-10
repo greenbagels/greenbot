@@ -5,6 +5,8 @@
 #include <regex>
 #include <vector>
 #include <sstream>
+#include <algorithm>
+#include <string>
 #include "define.h"
 #include "util.h"
 
@@ -12,7 +14,6 @@
 iterate_find(std::map<std::string, std::string> &m, std::string str)
 {
   size_t index = str.find_first_of('(');
-  std::cout << str.substr(0, index) << std::endl;
   for (auto it = m.begin(); it != m.end(); ++it)
   {
     size_t i = it->first.find_first_of('(');
@@ -24,11 +25,52 @@ iterate_find(std::map<std::string, std::string> &m, std::string str)
   return m.end();
 }
 
+  std::string
+randomIntString(void)
+{
+  return std::to_string(rand() % 100);
+}
+
+  std::string
+randomAdj(void)
+{
+  return randomAdjs[rand() % randomAdjs.size()];
+}
+
+  std::string
+randomNoun(void)
+{
+  return randomNouns[rand() % randomNouns.size()];
+}
+
+static std::map<std::string,std::string(*)(void)> replaceMap = 
+{
+  {"RANDINT", randomIntString},
+  {"RANDADJ", randomAdj},
+  {"RANDNOUN", randomNoun}
+};
+
+  std::string
+Define::ReplaceKeyWords(std::string str)
+{
+  for(auto it = replaceMap.begin(); it != replaceMap.end(); ++it)
+  {
+    std::string from = it->first;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        std::string to = it->second();
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+  }
+  return str;
+}
+
   bool
 Define::Match(Message *m)
 {
   std::string str = m->GetString();
-  if (str == "")
+  if (str == "" && str[0] != '#')
   {
     return false;
   }
@@ -47,7 +89,7 @@ Define::Match(Message *m)
 
   std::string out = "";
   std::map<std::string, std::string>::iterator it = iterate_find(matches, str);
-  //std::find_if(matches.begin(), matches.end(), customFind(str));
+
   if (it != matches.end())
   {
     out = it->second;
@@ -78,7 +120,7 @@ Define::Match(Message *m)
         out = "Invalid arguments for " + it->first + ".";
       }
     }
-
+    
     if (out != "")
     {
       response = m->Respond(out);
@@ -92,6 +134,8 @@ Define::Match(Message *m)
  void
 Define::Run()
 {
+  // Check for some key words.
+  response->Update(this->ReplaceKeyWords(response->GetString()));
   chat->SendMessage(response);
 }
 
