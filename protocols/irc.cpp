@@ -66,7 +66,7 @@ IRCMessage::IRCMessage(std::string s)
   {
     // The end is before the first space.
     prefixEnd = s.find_first_of(' ');
-    // Save the prefix. (Note: we ca further segment it later.)
+    // Save the prefix. (Note: we can further segment it later.)
     prefix = s.substr(1, prefixEnd - 1);
     if (prefix.find('!') != prefix.npos)
     {
@@ -216,7 +216,7 @@ IRCChat::GetMessage()
   std::cout << "PREFIX: " + m->prefix << std::endl;
 #endif
 
-  if (m->nickname == "emgram769")
+  if (m->nickname == "DEFAULT_ADMIN")
   {
     m->permissions = 1;
   }
