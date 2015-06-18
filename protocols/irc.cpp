@@ -203,17 +203,17 @@ IRCChat::GetMessage()
   }
 
 #ifdef LOGGING
-  std::cout << "COMMAND: " + m->command + "\nARGUMENTS" << std::endl;
+  std::cout << "COMMAND: " + m->command + "\nARGUMENTS" << '\n';
   for (auto i = m->argList.begin(); i != m->argList.end(); ++i)
   {
-    std::cout << "\t" + *i << std::endl;
+    std::cout << "\t" + *i << '\n';
   }
-  std::cout << "MESSAGE: " + m->str << std::endl;
-  std::cout << "NICKNAME: " + m->nickname << std::endl;
-  std::cout << "USERNAME: " + m->username << std::endl;
-  std::cout << "HOSTNAME: " + m->hostname << std::endl;
-  std::cout << "SERVERNAME: " + m->servername << std::endl;
-  std::cout << "PREFIX: " + m->prefix << std::endl;
+  std::cout << "MESSAGE: " + m->str << '\n';
+  std::cout << "NICKNAME: " + m->nickname << '\n';
+  std::cout << "USERNAME: " + m->username << '\n';
+  std::cout << "HOSTNAME: " + m->hostname << '\n';
+  std::cout << "SERVERNAME: " + m->servername << '\n';
+  std::cout << "PREFIX: " + m->prefix << '\n';
 #endif
 
   if (m->nickname == "DEFAULT_ADMIN")
@@ -232,7 +232,7 @@ IRCChat::GetMessage()
 IRCChat::SendMessage(Message *m)
 {
 #ifdef LOGGING
-  std::cout << m->GetFormattedString() << std::endl;
+  std::cout << m->GetFormattedString() << '\n';
 #endif
   socket->Send(m->GetFormattedString());
 }

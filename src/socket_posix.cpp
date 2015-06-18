@@ -20,7 +20,7 @@ Socket::Send(std::string message)
   if (send(socketFd, message.c_str(), message.length(), 0) == -1)
   {
     // TODO: Proper exception.
-    std::cout << "Send failed!" << std::endl;
+    std::cout << "Send failed!\n";
     close(socketFd);
     return;
   }
@@ -39,12 +39,12 @@ Socket::Recv()
   }
   else if (resultCode == 0)
   {
-    std::cout << "Connection closed." << std::endl;
+    std::cout << "Connection closed.\n";
     return "";
   }
   else
   {
-    std::cout << "Recv failed." << std::endl;
+    std::cout << "Recv failed.\n";
     return "";
   }
   return out;
