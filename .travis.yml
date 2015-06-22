@@ -1,0 +1,25 @@
+sudo: false
+        
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+before_script:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
+  - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.6"; fi
+
+script:
+  - ./configure
+  - make
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - h-rayflood-llvm
+    packages:
+      - libv8-dev
+      - gcc-5
+      - clang-3.6
