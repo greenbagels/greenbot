@@ -1,5 +1,3 @@
-CC=g++
-
 # Main Bot
 OBJDIR=objs
 SRCDIR=src
@@ -22,15 +20,15 @@ PROTOS=$(wildcard $(PROTODIR)/*.cpp)
 PROTOOBJS=$(patsubst $(PROTODIR)/%.cpp, $(PROTOOBJDIR)/%.o, $(PROTOS))
 
 # Flags
-CFLAGS+=-I$(INCDIR) -I$(MODULEINCDIR) -I$(PROTOINCDIR) -O3 -Wall -std=c++11
-CFLAGS_DEBUG+=-O0 -g3 -Werror -DLOGGING -pedantic
+CXXFLAGS+=-I$(INCDIR) -I$(MODULEINCDIR) -I$(PROTOINCDIR) -O3 -Wall -std=c++11 -pthread
+CXXFLAGS_DEBUG+=-O0 -g3 -Werror -Wextra -DLOGGING -pedantic
 include libs.mk # generated file
 
 .PHONY: all clean debug
 
 all: greenbot greenbot.conf
 
-debug: CFLAGS := $(CFLAGS) $(CFLAGS_DEBUG)
+debug: CXXFLAGS := $(CXXFLAGS) $(CXXFLAGS_DEBUG)
 debug: clean all
 
 greenbot.conf:
@@ -41,7 +39,7 @@ greenbot.conf:
 	echo "channels = #greenbot" >> greenbot.conf
 
 greenbot: $(OBJS) $(MODULEOBJS) $(PROTOOBJS)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 $(MODULEOBJS): | $(MODULEOBJDIR)
 $(MODULEOBJDIR):
@@ -56,13 +54,13 @@ $(OBJDIR):
 	mkdir -p $@
 
 $(MODULEOBJDIR)/%.o: $(MODULEDIR)/%.cpp $(wildcard $(MODULEINCDIR)/*.h) Makefile
-	$(CC) $(CFLAGS) $< -c -o $@
+	$(CXX) $(CXXFLAGS) $< -c -o $@
 
 $(PROTOOBJDIR)/%.o: $(PROTODIR)/%.cpp $(wildcard $(PROTOINCDIR)/*.h) Makefile
-	$(CC) $(CFLAGS) $< -c -o $@
+	$(CXX) $(CXXFLAGS) $< -c -o $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(wildcard $(INCDIR)/*.h) Makefile
-	$(CC) $(CFLAGS) $< -c -o $@
+	$(CXX) $(CXXFLAGS) $< -c -o $@
 
 clean:
 	rm -rf $(OBJDIR) greenbot
