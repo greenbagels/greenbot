@@ -1,4 +1,6 @@
 # greenbot
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/5556/badge.svg)](https://scan.coverity.com/projects/5556)
+
 A configurable chat based bot written in C++.
 
 # Building
