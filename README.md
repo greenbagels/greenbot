@@ -1,5 +1,5 @@
 # greenbot
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/5556/badge.svg)](https://scan.coverity.com/projects/5556)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/5556/badge.svg)](https://scan.coverity.com/projects/5556) [![Build Status](https://travis-ci.org/greenbagels/greenbot.svg?branch=travisci)](https://travis-ci.org/greenbagels/greenbot)
 
 A configurable chat based bot written in C++.
 
