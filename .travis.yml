@@ -7,8 +7,7 @@ compiler:
   - gcc
 
 before_script:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
-  - if [ "$CXX" = "clang++" ]; then export CXX="clang-3.6"; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
 
 script:
   - ./configure
@@ -18,8 +17,8 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.6
     packages:
       - libv8-dev
-      - gcc-5
-      - clang-3.6
+      - gcc-4.8
+      - g++-4.8
+      - clang
